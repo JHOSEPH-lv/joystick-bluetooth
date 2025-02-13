@@ -1,41 +1,53 @@
 import { useEffect } from "react"
 import { BleTouch } from "./App"
 
+let H: number = 0
+let V: number = 0
+let HV = '0,0'
+
+function sendHV(newH: number, newV: number) {
+    const HVToSend = `${newH},${newV}`
+    if (HVToSend !== HV) {
+        BleTouch.send(HVToSend)
+        H = newH
+        V = newV
+        HV = HVToSend
+    }
+}
+
+function printHV(stringHV: string) {
+    const w = document.getElementById('w')
+    if (w) {
+        w.innerHTML = stringHV
+    }
+}
+
+function convertValue(value:number) {
+    if (value < -2) return value + 2
+    else if (value <= 2) return 0
+    else return value - 2
+}
+
 export const JoyStick = () => {
     // El joystick tendrá un deslizador horizontal y uno vertical
 
     useEffect (() => {
-        requestPermission()
+        // requestPermission()
     }, [])
 
     const leftRigthHandler = (value:string) => {
         const num = Number(value)
-
-        // Crear el mensaje a enviar
-        const message = (() => {
-            if (num < -2) return `L${-num-2}`
-            else if (num <= 2) return 'M'
-            else return `R${num - 2}`
-        })()
-
-        // Enviar el valor al controlador
-        console.log(message)
-        // BleTouch.send(message)
+        const H = convertValue(num)
+        sendHV(H,V)
+        printHV(`${H},${V}`)
     }
 
     const leftTopBotomHandler = (value:string) => {
         const num = Number(value)
 
-        // Crear el mensaje a enviar
-        const message = (() => {
-            if (num < -2) return `B${-num-2}`
-            else if (num <= 2) return 'S'
-            else return `T${num - 2}`
-        })()
-
-        // Enviar el valor al controlador
-        console.log(message)
-        // BleTouch.send(message)
+        const V = convertValue(num)
+        sendHV(H,V)
+        printHV(`${H},${V}`)
     }
 
     return (
@@ -136,13 +148,13 @@ function startOrientation() {
             const xValue = Math.floor(betaLimit / 3)
             const yValue = Math.floor(gammaLimit / 3)
 
-            const H = (()=>{
+            H = (()=>{
                 if (xValue < -2) return xValue + 2
                 else if (xValue <= 2) return 0
                 else return xValue - 2
             })()
 
-            const V = (()=>{
+            V = (()=>{
                 if (yValue < -2) return yValue + 2
                 else if (yValue <= 2) return 0
                 else return yValue - 2

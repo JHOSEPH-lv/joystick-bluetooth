@@ -41,7 +41,7 @@ class Bluetooth {
             // console.log(service);
             
             this.characteristic = await service?.getCharacteristic(this.characteristic_id);
-            // console.log(this.characteristic);
+            console.log('Bluetooth conectado');
         } catch (error) {
             console.warn(error);
             return false;
