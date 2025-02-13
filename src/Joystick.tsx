@@ -4,6 +4,7 @@ import { BleTouch } from "./App"
 let H: number = 0
 let V: number = 0
 let HV = '0,0'
+let useControl = ''
 
 function sendHV(newH: number, newV: number) {
     const HVToSend = `${newH},${newV}`
@@ -28,14 +29,23 @@ function convertValue(value:number) {
     else return value - 2
 }
 
-export const JoyStick = () => {
+interface JoystickProps {
+    control: string
+}
+
+export const JoyStick = ({control}:JoystickProps) => {
     // El joystick tendrá un deslizador horizontal y uno vertical
 
     useEffect (() => {
         requestPermission()
     }, [])
 
+    useEffect (() => {
+        useControl = control
+    }, [control])
+
     const leftRigthHandler = (value:string) => {
+        if (useControl !== 'slider') return
         const num = Number(value)
         const H = convertValue(num)
         sendHV(H,V)
@@ -43,8 +53,8 @@ export const JoyStick = () => {
     }
 
     const leftTopBotomHandler = (value:string) => {
+        if (useControl !== 'slider') return
         const num = Number(value)
-
         const V = convertValue(num)
         sendHV(H,V)
         printHV(`${H},${V}`)
@@ -121,10 +131,10 @@ async function requestPermission() {
 function startOrientation() {
     if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", (event: DeviceOrientationEvent) => {
+            if (useControl !== 'motion') return
             const x = document.getElementById('x')
             const y = document.getElementById('y')
             const z = document.getElementById('z')
-            const w = document.getElementById('w')
 
             const beta = event.beta || 0;
             const gamma = event.gamma || 0;
@@ -148,23 +158,10 @@ function startOrientation() {
             const xValue = Math.floor(betaLimit / 3)
             const yValue = Math.floor(gammaLimit / 3)
 
-            H = (()=>{
-                if (xValue < -2) return xValue + 2
-                else if (xValue <= 2) return 0
-                else return xValue - 2
-            })()
-
-            V = (()=>{
-                if (yValue < -2) return yValue + 2
-                else if (yValue <= 2) return 0
-                else return yValue - 2
-            })()
-
-            if (w) {
-                w.innerHTML = `${H},${V}`
-                // BleTouch.send(`${H},${V}`)
-            }
-
+            const H = convertValue(xValue)
+            const V = convertValue(yValue)
+            sendHV(H,V)
+            printHV(`${H},${V}`)
         });
     } else {
         console.log("DeviceOrientationEvent no está soportado en este navegador.");

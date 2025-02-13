@@ -1,4 +1,5 @@
-import './App.css'
+import { useState } from 'react'
+import './assets/css/App.css'
 import Bluetooth from './core/Bluetooth/Bluetooth'
 import { JoyStick } from './Joystick'
 
@@ -15,6 +16,9 @@ export const BleTouch = new Bluetooth({
 })
 
 function App() {
+  const [control, setControl] = useState('slider')
+
+  const controlBtnTxt = control === 'slider' ? 'deslizadores' : 'movimiento'
 
   const connectBluetooth = async () => {
     await BleTouch.connect()
@@ -30,14 +34,20 @@ function App() {
     }
   }
 
+  const toggleControl = () => {
+    if (control === 'slider') setControl('motion')
+    else setControl('slider')
+  }
+
   return (
     <>
       <div className="buttonsBox">
         <button onClick={toggleFullScreen}>Pantalla completa</button>
         <button onClick={connectBluetooth}>Conectar</button>
         <button onClick={BleTouch.disconnect}>Desconectar</button>
+        <button onClick={toggleControl}>Control {controlBtnTxt}</button>
       </div>
-      <JoyStick />
+      <JoyStick control={control}/>
     </>
   )
 }
