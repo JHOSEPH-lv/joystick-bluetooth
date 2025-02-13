@@ -32,7 +32,7 @@ export const JoyStick = () => {
     // El joystick tendrá un deslizador horizontal y uno vertical
 
     useEffect (() => {
-        // requestPermission()
+        requestPermission()
     }, [])
 
     const leftRigthHandler = (value:string) => {
@@ -162,7 +162,7 @@ function startOrientation() {
 
             if (w) {
                 w.innerHTML = `${H},${V}`
-                BleTouch.send(`${H},${V}`)
+                // BleTouch.send(`${H},${V}`)
             }
 
         });
