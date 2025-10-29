@@ -1,19 +1,64 @@
-import { useEffect } from "react"
-import { BleTouch } from "./App"
+import { useEffect, useRef } from "react"
+import { Button } from "./components/Button"
+import { Card } from "./components/Card"
+import { CardContent } from "./components/CartContent"
+import "./assets/css/Joystick.css"
+import { toggleFullScreen } from "./utils/toggleFullScreen"
+import { useJoystick } from "./utils/useJoystick"
+import { BleTouch } from "./utils/BlueTouch"
 
-let H: number = 0
-let V: number = 0
-let HV = '0,0'
+let lv = 0
+let lh = 0
+let rv = 0
+let rh = 0
+// let HV = '0,0'
 let useControl = ''
 
-function sendHV(newH: number, newV: number) {
-    const HVToSend = `${newH},${newV}`
-    if (HVToSend !== HV) {
-        BleTouch.send(HVToSend)
-        H = newH
-        V = newV
-        HV = HVToSend
+// function sendHV(newH: number, newV: number) {
+//     // 'comando:valor'
+//     // 'lv:100'
+//     // 'lh:50'
+//     const HVToSend = `${newH},${newV}`
+//     if (HVToSend !== HV) {
+//         BleTouch.send(HVToSend)
+//         H = newH
+//         V = newV
+//         HV = HVToSend
+//     }
+// }
+
+// 'comando:valor,comando:valor,...'
+// 'lv:100'
+// 'lh:50'
+// objeto: {lv:100, lh:50, ...}
+function sendData(objeto: Record<string, string | number>) {
+    const array: string[] = []
+    for (const [command, value] of Object.entries(objeto)) {
+        array.push(`${command}:${value}`)
     }
+    const message = array.join(',')
+    console.log(message)
+    if(
+        objeto.lv!==undefined ||
+        objeto.rv!==undefined
+    ){
+        if(objeto.lh!==undefined) lh = objeto.lh as number
+        if(objeto.lv!==undefined) lv = objeto.lv as number
+        if(objeto.rh!==undefined) rh = objeto.rh as number
+        if(objeto.rv!==undefined) rv = objeto.rv as number
+        const textoDatos = document.querySelector('.texto-datos')
+        if(textoDatos) textoDatos.innerHTML = `
+            <p>lv:</p>
+            <p>${lv}</p>
+            <p>rv:</p>
+            <p>${rv}</p>
+            <p>lh:</p>
+            <p>${lh}</p>
+            <p>rh:</p>
+            <p>${rh}</p> 
+        `
+    }
+    BleTouch.send(message)
 }
 
 function printHV(stringHV: string) {
@@ -23,84 +68,199 @@ function printHV(stringHV: string) {
     }
 }
 
-function convertValue(value:number) {
+function convertValue(value: number) {
     if (value < -2) return value + 2
     else if (value <= 2) return 0
     else return value - 2
 }
 
-interface JoystickProps {
-    control: string
-}
 
-export const JoyStick = ({control}:JoystickProps) => {
+
+export const JoyStick = () => {
     // El joystick tendrá un deslizador horizontal y uno vertical
 
-    useEffect (() => {
+    const leftStickRef = useRef<HTMLDivElement>(null)
+    const leftBallRef = useRef<HTMLDivElement>(null)
+    const rightStickRef = useRef<HTMLDivElement>(null)
+    const rightBallRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
         requestPermission()
     }, [])
 
-    useEffect (() => {
-        useControl = control
-    }, [control])
+    useJoystick({
+        stickRef: leftStickRef,
+        ballRef: leftBallRef,
+        onMove: (lh, lv) => {
+            sendData({ lh, lv })
+        },
+    })
 
-    const leftRigthHandler = (value:string) => {
-        if (useControl !== 'slider') return
-        const num = Number(value)
-        const H = convertValue(num)
-        sendHV(H,V)
-        printHV(`${H},${V}`)
+    useJoystick({
+        stickRef: rightStickRef,
+        ballRef: rightBallRef,
+        onMove: (rh, rv) => {
+            sendData({ rh, rv })
+        },
+    })
+
+    const handleConectar = () => {
+        BleTouch.connect()
     }
 
-    const leftTopBotomHandler = (value:string) => {
-        if (useControl !== 'slider') return
-        const num = Number(value)
-        const V = convertValue(num)
-        sendHV(H,V)
-        printHV(`${H},${V}`)
+    const handleDesconectar = () => {
+        BleTouch.disconnect()
+    }
+
+    const onBtnDown = (comand: string) => {
+        sendData({ [comand]: '1' })
+    }
+
+    const onBtnUp = (comand: string) => {
+        sendData({ [comand]: '0' })
     }
 
     return (
-        <div className="joystick">
-            <div style={{transform: 'scale(1.5)'}}>
-                <input  
-                    type="range" 
-                    min="-10" 
-                    max="10" 
-                    step="1" 
-                    onChange={(e)=>{
-                        leftRigthHandler(e.target.value)
-                    }}
-                />
+        <div className="mando-container">
+
+            <div className="panel-superior">
+                <div className="panel-superior-botones">
+                    <Button onClick={handleConectar} className="btn-conectar">Conectar</Button>
+                    <Button className="btn-pantalla" onClick={toggleFullScreen}>Pantalla completa</Button>
+                    <Button onClick={handleDesconectar} className="btn-desconectar">Desconectar</Button>
+                </div>
+                <Card className="pantalla-monitoreo">
+                    <CardContent>
+                        <div className="texto-datos">
+                            <p>lv:</p>
+                            <p>-</p>
+                            <p>rv:</p>
+                            <p>-</p>
+                            <p>lh:</p>
+                            <p>-</p>
+                            <p>rh:</p>
+                            <p>-</p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '10em'
-            }}>
-                <span id="x">0</span>{' '}
-                <span id="y">0</span>{' '}
-                <span id="z">0</span>
-                <span id="w">0,0</span>
+
+            <div className="botones-L">
+                <Button
+                    className="btn-L"
+                    onMouseDown={() => onBtnDown('l1')}
+                    onMouseUp={() => onBtnUp('l1')}
+                >L1</Button>
+                <Button
+                    className="btn-L"
+                    onMouseDown={() => onBtnDown('l2')}
+                    onMouseUp={() => onBtnUp('l2')}
+                >L2</Button>
+                <Button
+                    className="btn-L"
+                    onMouseDown={() => onBtnDown('l3')}
+                    onMouseUp={() => onBtnUp('l3')}
+                >L3</Button>
             </div>
-            <div style={{transform: 'scale(1.5)'}}>
-                <input 
-                    type="range" 
-                    min="-10" 
-                    max="10" 
-                    step="1" 
-                    style={{
-                        transform: 'rotate(-90deg)',
-                    }}
-                    onChange={(e)=>{
-                        leftTopBotomHandler(e.target.value)
-                    }}
-                />
+
+            <div className="botones-R">
+                <Button className="btn-R"
+                    onMouseDown={() => onBtnDown('r1')}
+                    onMouseUp={() => onBtnUp('r1')}
+                >R1</Button>
+                <Button className="btn-R"
+                    onMouseDown={() => onBtnDown('r2')}
+                    onMouseUp={() => onBtnUp('r2')}
+                >R2</Button>
+                <Button className="btn-R"
+                    onMouseDown={() => onBtnDown('r3')}
+                    onMouseUp={() => onBtnUp('r3')}
+                >R3</Button>
             </div>
+
+            <div ref={leftStickRef} className="palanca palanca-izquierda">
+                <div ref={leftBallRef} className="palanca-bolita">
+                    <div className="palanca-bolita-trasladada"></div>
+                </div>
+            </div>
+
+            <div ref={rightStickRef} className="palanca palanca-derecha">
+                <div ref={rightBallRef} className="palanca-bolita">
+                    <div className="palanca-bolita-trasladada"></div>
+                </div>
+            </div>
+
+            <div className="flechas">
+                <div></div>
+                <Button
+                    className="flecha"
+                    onMouseDown={() => onBtnDown('U')}
+                    onMouseUp={() => onBtnUp('U')}
+                >▲</Button>
+                <div></div>
+                <Button
+                    className="flecha"
+                    onMouseDown={() => onBtnDown('L')}
+                    onMouseUp={() => onBtnUp('L')}
+                >◀</Button>
+                <div></div>
+                <Button
+                    className="flecha"
+                    onMouseDown={() => onBtnDown('R')}
+                    onMouseUp={() => onBtnUp('R')}
+                >▶</Button>
+                <div></div>
+                <Button
+                    className="flecha"
+                    onMouseDown={() => onBtnDown('D')}
+                    onMouseUp={() => onBtnUp('D')}
+                >▼</Button>
+                <div></div>
+            </div>
+
+
+            <div className="botones-accion">
+                <div></div>
+                <Button
+                    className="btn-accion"
+                    onMouseDown={() => onBtnDown('T')}
+                    onMouseUp={() => onBtnUp('T')}
+                >△</Button>
+                <div></div>
+                <Button
+                    className="btn-accion"
+                    onMouseDown={() => onBtnDown('C')}
+                    onMouseUp={() => onBtnUp('C')}
+                >▢</Button>
+                <div></div>
+                <Button
+                    className="btn-accion"
+                    onMouseDown={() => onBtnDown('O')}
+                    onMouseUp={() => onBtnUp('O')}
+                >◯</Button>
+                <div></div>
+                <Button
+                    className="btn-accion"
+                    onMouseDown={() => onBtnDown('X')}
+                    onMouseUp={() => onBtnUp('X')}
+                >Ⅹ</Button>
+                <div></div>
+            </div>
+
+            <Button
+                className="btn-selec"
+                onMouseDown={() => onBtnDown('Se')}
+                onMouseUp={() => onBtnUp('Se')}
+            >Select</Button>
+
+            <Button 
+                className="btn-start"
+                onMouseDown={() => onBtnDown('St')}
+                onMouseUp={() => onBtnUp('St')}
+            >Start</Button>
         </div>
-    )
+    );
+
 }
 
 interface IDeviceOrientationEvent {
@@ -109,9 +269,8 @@ interface IDeviceOrientationEvent {
 
 async function requestPermission() {
     if (
-        typeof DeviceOrientationEvent !== "undefined" && 
-        (DeviceOrientationEvent as unknown as IDeviceOrientationEvent).requestPermission) 
-    {
+        typeof DeviceOrientationEvent !== "undefined" &&
+        (DeviceOrientationEvent as unknown as IDeviceOrientationEvent).requestPermission) {
         try {
             const permission = await (DeviceOrientationEvent as unknown as IDeviceOrientationEvent).requestPermission();
             if (permission === "granted") {
@@ -160,7 +319,7 @@ function startOrientation() {
 
             const H = convertValue(xValue)
             const V = convertValue(yValue)
-            sendHV(H,V)
+            // sendHV(H, V)
             printHV(`${H},${V}`)
         });
     } else {

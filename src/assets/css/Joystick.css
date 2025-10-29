@@ -1,0 +1,195 @@
+/* 🎮 MandoBluetooth.css */
+
+.mando-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  background-color: #222;
+  color: white;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.panel-superior {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+  position: absolute;
+  top: 1em;
+}
+
+.panel-superior-botones {
+  display: flex;
+  gap: 1em;
+}
+
+.btn-conectar {
+  background-color: #048f37;
+}
+
+.btn-desconectar {
+  background-color: #dc2626;
+}
+
+.btn-pantalla {
+  background-color: #2563eb;
+}
+
+.botones-R {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.botones-L {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}
+
+.btn-L, .btn-R {
+  width: 20vw;
+  height: 7vh;
+  background-color: #fff2;
+  border: 1px solid #fff;
+}
+
+/* Reglas comunes para ambas palancas */
+.palanca {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  overflow: hidden;
+  touch-action: none; /* 🔥 esencial para evitar scroll al tocar */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Palanca izquierda */
+.palanca-izquierda {
+  bottom: 15vh;
+  left: 5vw;
+  width: 45vh;
+  height: 45vh;
+  background-color: #fff2;
+}
+
+/* Palanca derecha */
+.palanca-derecha {
+  bottom: 1em;
+  right: 22vw;
+  width: 45vh;
+  height: 45vh;
+  background-color: #6665;
+}
+
+/* Capa que se mueve (controlada por transform desde JS) */
+.palanca-bolita {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 45vh;
+  height: 45vh;
+  /* background-color: #ffffff25; */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* sin translate aquí, se aplica al hijo */
+}
+
+/* Bolita visible centrada */
+.palanca-bolita-trasladada {
+  width: 10vh;
+  height: 10vh;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 20px 10px #fff8;
+  /* centra respecto al padre */
+  pointer-events: none; /* la interacción ocurre en el contenedor */
+}
+
+.botones-accion {
+  display: grid;
+  grid-template-columns: repeat(3, 10vh);
+  grid-template-rows: repeat(3, 10vh);
+  gap: 0.25em;
+  position: absolute;
+  bottom: 35vh;
+  right: 3em;
+}
+
+.flecha {
+  background-color: #fff2;
+  border: 1px solid #fff;
+}
+
+.btn-selec {
+  background-color: #fff2;
+  border: 1px solid #fff;
+  position: absolute;
+  width: 15vw;
+  height: 7vh;
+  bottom: 2vh;
+  left: 2vw;
+}
+
+.btn-start {
+  background-color: #fff2;
+  border: 1px solid #fff;
+  position: absolute;
+  width: 15vw;
+  height: 7vh;
+  bottom: 2vh;
+  right: 2vw;
+}
+
+/* Pantalla central */
+.pantalla-monitoreo {
+  background-color: #000;
+  border: 2px solid #555;
+  width: 30vw;
+  height: 30vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.texto-datos {
+  color: #22c55e;
+  text-align: end;
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em;
+  gap: 1em 0.5em;
+}
+
+/* Botones de acción */
+.flechas {
+  display: grid;
+  grid-template-columns: repeat(3, 10VH);
+  grid-template-rows: repeat(3, 10VH);
+  gap: 5px;
+  position: absolute;
+  bottom: 1em;
+  left: 30vw;
+}
+
+.btn-accion {
+  border-radius: 50%;
+  font-size: 2em;
+  background-color: #fff2;
+  border: 1px solid #fff;
+}
