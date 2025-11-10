@@ -183,7 +183,7 @@
 /* Palanca izquierda */
 .palanca-izquierda {
   bottom: 1em;
-  left: 22vw;
+  left: 19vw;
   width: 45vh;
   height: 45vh;
 }
@@ -191,7 +191,7 @@
 /* Palanca derecha */
 .palanca-derecha {
   bottom: 1em;
-  right: 22vw;
+  right: 19vw;
   width: 45vh;
   height: 45vh;
 }
