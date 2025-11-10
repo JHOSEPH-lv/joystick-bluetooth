@@ -25,13 +25,6 @@ export const useJoystick = ({
     const ball = ballRef.current
     if (!stick || !ball) return
 
-    // const getClientFromPointer = (evt: PointerEvent | MouseEvent | Touch) => {
-    //   // si es PointerEvent o MouseEvent: ya tiene clientX/clientY
-    //   // si es Touch (fallback): touch.clientX/clientY
-    //   // pero este helper no se usa con pointer api directamente
-    //   return { clientX: (evt as any).clientX, clientY: (evt as any).clientY }
-    // }
-
     const moveHandler = (evt: PointerEvent) => {
       // si no corresponde al pointer activo, ignorar
       if (!isDragging.current || activePointerId.current === null) return

@@ -14,6 +14,18 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+.mando-container * {
+  touch-action: none;
+}
+
+/* .palanca,
+.btn-L,
+.btn-R,
+.flecha,
+.btn-accion {
+  touch-action: none;
+} */
+
 .panel-superior {
   display: flex;
   flex-direction: column;
