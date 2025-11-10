@@ -45,7 +45,7 @@ export const JoyStick = () => {
     }
 
     const onBtnDown = (comand: string) => {
-        sendData({ [comand]: '1'}, `${comand}-DOWN`)
+        sendData({ [comand]: '1' }, `${comand}-DOWN`)
     }
 
     const onBtnUp = (comand: string) => {
@@ -53,7 +53,7 @@ export const JoyStick = () => {
     }
 
     return (
-        <div className="mando-container">
+        <div className="mando-container no-select">
 
             <div className="panel-superior">
                 <div className="panel-superior-botones">
@@ -72,7 +72,7 @@ export const JoyStick = () => {
                             <p>-</p>
                             <p>rh:</p>
                             <p>-</p>
-                            <p style={{ gridColumn: 'span 4', textAlign:'center' }}>C-DOWN</p>
+                            <p style={{ gridColumn: 'span 4', textAlign: 'center' }}>C-DOWN</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -118,18 +118,6 @@ export const JoyStick = () => {
                     onPointerDown={onBtnDown}
                     onPointerUp={onBtnUp}
                 >R3</Button>
-            </div>
-
-            <div ref={leftStickRef} className="palanca palanca-izquierda">
-                <div ref={leftBallRef} className="palanca-bolita">
-                    <div className="palanca-bolita-trasladada"></div>
-                </div>
-            </div>
-
-            <div ref={rightStickRef} className="palanca palanca-derecha">
-                <div ref={rightBallRef} className="palanca-bolita">
-                    <div className="palanca-bolita-trasladada"></div>
-                </div>
             </div>
 
             <div className="flechas">
@@ -210,6 +198,19 @@ export const JoyStick = () => {
                 onPointerDown={onBtnDown}
                 onPointerUp={onBtnUp}
             >Start</Button>
+
+            <div ref={leftStickRef} className="palanca palanca-izquierda">
+                <div ref={leftBallRef} className="palanca-bolita">
+                    <div className="palanca-bolita-trasladada"></div>
+                </div>
+            </div>
+
+            <div ref={rightStickRef} className="palanca palanca-derecha">
+                <div ref={rightBallRef} className="palanca-bolita">
+                    <div className="palanca-bolita-trasladada"></div>
+                </div>
+            </div>
+
         </div>
     );
 

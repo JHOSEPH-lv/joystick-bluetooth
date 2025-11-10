@@ -5,8 +5,7 @@
   position: relative;
   flex-direction: column;
   align-items: center;
-  background-color: #222;
-  color: white;
+  background-color: #2d2d2d;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -18,19 +17,12 @@
   touch-action: none;
 }
 
-/* .palanca,
-.btn-L,
-.btn-R,
-.flecha,
-.btn-accion {
-  touch-action: none;
-} */
-
+/* Panel superior */
 .panel-superior {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1em;
+  gap: 1em;   
   margin-bottom: 1em;
   position: absolute;
   top: 1em;
@@ -42,47 +34,146 @@
 }
 
 .btn-conectar {
-  background-color: #048f37;
+  border-radius: 1em;
+  background: #474;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
 }
 
 .btn-desconectar {
-  background-color: #dc2626;
+  border-radius: 1em;
+  background: #744;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+
 }
 
 .btn-pantalla {
-  background-color: #2563eb;
+  border-radius: 1em;
+  background: #447;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
 }
 
-.botones-R {
+/* Pantalla central */
+.pantalla-monitoreo {
+  background-color: #222;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #000a;
+  width: 30vw;
+  height: 30vh;
   display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  position: absolute;
-  top: 1em;
-  right: 1em;
+  align-items: center;
+  justify-content: center;
 }
 
+.texto-datos {
+  color: #fff;
+  background: #0000;
+  text-align: end;
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em;
+  gap: 0.2em 1.8em;
+}
+
+/* Botones L y R */
 .botones-L {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 0.25em;
   position: absolute;
   top: 1em;
   left: 1em;
 }
 
+.botones-R {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
 .btn-L, .btn-R {
   width: 20vw;
   height: 7vh;
-  background-color: #fff2;
-  border: 1px solid #fff;
+  color: #ddd;
+  border-radius: 3.5vh;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+}
+
+/* flechas */
+.flechas {
+  display: grid;
+  grid-template-columns: repeat(3, 10VH);
+  grid-template-rows: repeat(3, 10VH);
+  gap: 0;
+  position: absolute;
+  bottom: 30vh;
+  left: 5vw;
+}
+
+.flecha {
+  border-radius: 3vh;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+}
+
+/* botones accion */
+.botones-accion {
+  display: grid;
+  grid-template-columns: repeat(3, 10vh);
+  grid-template-rows: repeat(3, 10vh);
+  gap: 0;
+  position: absolute;
+  bottom: 30vh;
+  right: 5vw;
+}
+
+.btn-accion {
+  border-radius: 3vh;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+}
+
+/* boton selec */
+.btn-selec {
+  border-radius: 3.5vh;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+  position: absolute;
+  width: 15vw;
+  height: 7vh;
+  bottom: 2vh;
+  left: 2vw;
+}
+
+/* boton star */
+.btn-start {
+  border-radius: 3.5vh;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
+  position: absolute;
+  width: 15vw;
+  height: 7vh;
+  bottom: 2vh;
+  right: 2vw;
 }
 
 /* Reglas comunes para ambas palancas */
 .palanca {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid #fff;
+  background: #444;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 6px 2px #0008;
   overflow: hidden;
   touch-action: none; /* 🔥 esencial para evitar scroll al tocar */
   -webkit-user-select: none;
@@ -91,11 +182,10 @@
 
 /* Palanca izquierda */
 .palanca-izquierda {
-  bottom: 15vh;
-  left: 5vw;
+  bottom: 1em;
+  left: 22vw;
   width: 45vh;
   height: 45vh;
-  background-color: #fff2;
 }
 
 /* Palanca derecha */
@@ -104,7 +194,6 @@
   right: 22vw;
   width: 45vh;
   height: 45vh;
-  background-color: #6665;
 }
 
 /* Capa que se mueve (controlada por transform desde JS) */
@@ -128,80 +217,15 @@
   width: 10vh;
   height: 10vh;
   border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 0 20px 10px #fff8;
+  background-color: #bbb;
+  box-shadow: 0 0 20px 10px #bbb8;
   /* centra respecto al padre */
   pointer-events: none; /* la interacción ocurre en el contenedor */
 }
 
-.botones-accion {
-  display: grid;
-  grid-template-columns: repeat(3, 10vh);
-  grid-template-rows: repeat(3, 10vh);
-  gap: 0.25em;
-  position: absolute;
-  bottom: 35vh;
-  right: 3em;
-}
-
-.flecha {
-  background-color: #fff2;
-  border: 1px solid #fff;
-}
-
-.btn-selec {
-  background-color: #fff2;
-  border: 1px solid #fff;
-  position: absolute;
-  width: 15vw;
-  height: 7vh;
-  bottom: 2vh;
-  left: 2vw;
-}
-
-.btn-start {
-  background-color: #fff2;
-  border: 1px solid #fff;
-  position: absolute;
-  width: 15vw;
-  height: 7vh;
-  bottom: 2vh;
-  right: 2vw;
-}
-
-/* Pantalla central */
-.pantalla-monitoreo {
-  background-color: #000;
-  border: 2px solid #555;
-  width: 30vw;
-  height: 30vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.texto-datos {
-  color: #22c55e;
-  text-align: end;
-  display: grid;
-  grid-template-columns: 2em 2em 2em 2em;
-  gap: 1em 0.5em;
-}
-
-/* Botones de acción */
-.flechas {
-  display: grid;
-  grid-template-columns: repeat(3, 10VH);
-  grid-template-rows: repeat(3, 10VH);
-  gap: 5px;
-  position: absolute;
-  bottom: 1em;
-  left: 30vw;
-}
-
-.btn-accion {
-  border-radius: 50%;
-  font-size: 2em;
-  background-color: #fff2;
-  border: 1px solid #fff;
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
